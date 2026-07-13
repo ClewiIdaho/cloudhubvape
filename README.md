@@ -5,9 +5,13 @@ A modern, mobile-friendly storefront demo for **Cloud Hub Vape & Smoke** (7068 W
 ## Features
 
 - **21+ age gate** with FDA nicotine warning banner
-- **Live inventory browser** — search, category chips, brand filter, sorting, stock badges
+- **Live inventory browser** — search, category chips, brand filter, sorting, stock badges with low-stock counts
 - **Order-ahead pickup flow** — cart drawer, quantity controls, checkout form, order confirmation
+- **Cloud Hub Rewards (preview)** — demo loyalty signup, points per order, store-credit redemption tiers; all localStorage, clearly labeled as a preview
+- **Notification previews** — mock customer SMS + staff alert shown on order confirmation (illustrative only, nothing sends)
+- **Mobile-first** — bottom-sheet cart & checkout, sticky "View Cart" bar, 44px minimum tap targets, zero horizontal scroll at 375/390px
 - **Brands marquee**, store info with embedded Google Map, click-to-call
+- Open Graph tags + custom favicon for clean link sharing
 - Fully responsive, dark neon theme matching the shop's branding, no build step required
 
 ## Running it
