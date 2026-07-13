@@ -77,10 +77,11 @@
 
   <!-- ============ HERO ============ -->
   <section class="hero" id="home">
-    <div class="hero__smoke hero__smoke--1"></div>
-    <div class="hero__smoke hero__smoke--2"></div>
     <div class="hero__glow hero__glow--blue"></div>
     <div class="hero__glow hero__glow--pink"></div>
+    <div class="wisp wisp--1"></div>
+    <div class="wisp wisp--2"></div>
+    <div class="wisp wisp--3"></div>
     <div class="hero__inner">
       <p class="hero__badge">⚡ NOW OPEN · 7068 W State St, Boise</p>
       <h1 class="hero__title">
@@ -300,7 +301,14 @@
         </form>
       </div>
       <div id="checkoutSuccess" hidden>
-        <div class="success__icon">✅</div>
+        <div class="success__anim" aria-hidden="true">
+          <div class="success__puff success__puff--1"></div>
+          <div class="success__puff success__puff--2"></div>
+          <svg class="success__check" viewBox="0 0 64 64">
+            <circle cx="32" cy="32" r="29"/>
+            <path d="M20 33 L28.5 41.5 L44 25"/>
+          </svg>
+        </div>
         <h3>Order received!</h3>
         <p class="modal__sub">Order <strong id="orderNumber"></strong> is in the queue.<br>We'll text <strong id="orderPhone"></strong> when it's ready at the counter.</p>
         <div class="success__points" id="successPoints" hidden></div>

@@ -108,7 +108,11 @@ a { color: inherit; text-decoration: none; }
 }
 .nav__logo { font: 800 22px/1 var(--font-display); letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
 .nav__logo span { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.nav__cloud { filter: drop-shadow(0 0 8px rgba(58,167,255,.8)); }
+.nav__cloud { display: inline-block; animation: cloudIdle 6s ease-in-out infinite; }
+@keyframes cloudIdle {
+  0%, 100% { transform: translateY(0); filter: drop-shadow(0 0 7px rgba(58,167,255,.7)); }
+  50%      { transform: translateY(-2px); filter: drop-shadow(0 0 12px rgba(58,167,255,.95)); }
+}
 .nav__links { display: flex; gap: 26px; font-size: 14.5px; font-weight: 500; color: var(--muted); }
 .nav__links a { transition: color .15s; position: relative; }
 .nav__links a:hover { color: var(--text); }
@@ -133,6 +137,8 @@ a { color: inherit; text-decoration: none; }
   transition: transform .2s cubic-bezier(.3,1.6,.6,1);
 }
 .cart-btn__count.pop { transform: scale(1.35); }
+.cart-btn.wiggle { animation: cartWiggle .4s ease; }
+@keyframes cartWiggle { 0%, 100% { transform: none; } 30% { transform: rotate(-9deg) scale(1.08); } 65% { transform: rotate(6deg); } }
 
 /* ---------- Hero ---------- */
 .hero {
@@ -146,14 +152,21 @@ a { color: inherit; text-decoration: none; }
 .hero__glow--pink { width: 520px; height: 520px; background: var(--pink-deep); bottom: -180px; right: -140px; animation: drift 17s ease-in-out infinite alternate-reverse; }
 @keyframes drift { from { transform: translate(0,0) scale(1); } to { transform: translate(60px, 40px) scale(1.15); } }
 
-.hero__smoke {
-  position: absolute; width: 700px; height: 700px; border-radius: 50%;
-  background: radial-gradient(circle, rgba(255,255,255,.05) 0%, transparent 65%);
-  filter: blur(30px); pointer-events: none;
+/* Drifting vapor wisps — three layers at different speeds for gentle
+   parallax depth. Transform-only animation, cheap to composite. */
+.wisp {
+  position: absolute; pointer-events: none; border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(255,255,255,.9) 0%, transparent 68%);
+  filter: blur(36px); will-change: transform;
 }
-.hero__smoke--1 { top: -200px; right: -100px; animation: smoke 22s linear infinite; }
-.hero__smoke--2 { bottom: -250px; left: -150px; animation: smoke 28s linear infinite reverse; }
-@keyframes smoke { from { transform: rotate(0) translateX(30px) rotate(0); } to { transform: rotate(360deg) translateX(30px) rotate(-360deg); } }
+.wisp--1 { width: 440px; height: 130px; top: 16%; left: -30%; opacity: .06; animation: wispDrift 52s linear infinite; }
+.wisp--2 { width: 600px; height: 180px; top: 44%; left: -46%; opacity: .045; animation: wispDrift 74s linear infinite; animation-delay: -28s; }
+.wisp--3 { width: 320px; height: 100px; top: 68%; left: -26%; opacity: .07; animation: wispDrift 38s linear infinite; animation-delay: -10s; }
+@keyframes wispDrift {
+  0%   { transform: translate(0, 0); }
+  50%  { transform: translate(60vw, -16px); }
+  100% { transform: translate(135vw, 8px); }
+}
 
 .hero__inner { position: relative; max-width: 900px; margin: 0 auto; }
 .hero__badge {
@@ -214,7 +227,20 @@ section { padding: 76px clamp(16px, 5vw, 56px); max-width: 1280px; margin: 0 aut
   padding: 28px 22px; text-align: center; transition: transform .2s, border-color .2s, box-shadow .2s;
 }
 .cat-card:hover { transform: translateY(-5px); border-color: rgba(58,167,255,.5); box-shadow: 0 14px 40px rgba(58,167,255,.15); }
-.cat-card__icon { font-size: 34px; margin-bottom: 12px; }
+.cat-card__icon { font-size: 34px; margin-bottom: 12px; position: relative; display: inline-block; transition: transform .25s ease; }
+.cat-card:hover .cat-card__icon, .cat-card:active .cat-card__icon { transform: translateY(-4px); }
+.cat-card__icon::after {
+  content: ""; position: absolute; left: 50%; bottom: 2px; width: 12px; height: 12px;
+  margin-left: -6px; border-radius: 50%; pointer-events: none; opacity: 0;
+  background: radial-gradient(circle, rgba(255,255,255,.55), transparent 70%);
+  filter: blur(3px);
+}
+.cat-card:hover .cat-card__icon::after, .cat-card:active .cat-card__icon::after { animation: vaporRise 1.1s ease-out infinite; }
+@keyframes vaporRise {
+  0%   { opacity: 0; transform: translateY(0) scale(.7); }
+  25%  { opacity: .8; }
+  100% { opacity: 0; transform: translateY(-26px) scale(1.8); }
+}
 .cat-card h3 { font-family: var(--font-display); font-size: 18px; margin-bottom: 6px; }
 .cat-card p { color: var(--muted); font-size: 13.5px; }
 
@@ -260,6 +286,8 @@ section { padding: 76px clamp(16px, 5vw, 56px); max-width: 1280px; margin: 0 aut
   animation: fadeUp .4s ease both;
 }
 .product:hover { transform: translateY(-4px); border-color: rgba(255,255,255,.2); box-shadow: 0 16px 44px rgba(0,0,0,.5); }
+.product.card-pulse { animation: cardPulse .3s ease; }
+@keyframes cardPulse { 0% { transform: none; } 35% { transform: scale(1.025); } 100% { transform: none; } }
 
 .product__art {
   position: relative; height: 150px;
@@ -434,7 +462,7 @@ body.is-offline .visit__map-fallback { display: flex; }
   position: relative; width: min(460px, 100%);
   background: linear-gradient(160deg, #13152b, #0b0d1a);
   border: 1px solid var(--card-border); border-radius: 22px; padding: 34px 30px;
-  transform: translateY(14px); transition: transform .25s;
+  transform: translateY(14px); transition: transform .32s cubic-bezier(.2,.9,.3,1);
   max-height: 90vh; overflow-y: auto;
 }
 .modal.open .modal__card { transform: none; }
@@ -452,7 +480,29 @@ body.is-offline .visit__map-fallback { display: flex; }
 #checkoutForm input:focus, #checkoutForm select:focus, #checkoutForm textarea:focus {
   border-color: var(--blue); box-shadow: 0 0 0 3px rgba(58,167,255,.15);
 }
-.success__icon { font-size: 52px; text-align: center; margin-bottom: 10px; }
+/* Order-success: checkmark draws in behind a soft vapor puff */
+.success__anim { position: relative; width: 84px; height: 84px; margin: 0 auto 14px; }
+.success__check { width: 84px; height: 84px; display: block; }
+.success__check circle {
+  fill: none; stroke: rgba(52,224,161,.85); stroke-width: 3.5; stroke-linecap: round;
+  stroke-dasharray: 183; stroke-dashoffset: 183;
+  transform: rotate(-90deg); transform-origin: center;
+  animation: drawStroke .55s ease-out forwards;
+}
+.success__check path {
+  fill: none; stroke: var(--green); stroke-width: 5; stroke-linecap: round; stroke-linejoin: round;
+  stroke-dasharray: 36; stroke-dashoffset: 36;
+  animation: drawStroke .35s .45s ease-out forwards;
+}
+@keyframes drawStroke { to { stroke-dashoffset: 0; } }
+.success__puff {
+  position: absolute; inset: 0; border-radius: 50%; opacity: 0; pointer-events: none;
+  background: radial-gradient(circle, rgba(255,255,255,.3), transparent 65%);
+  filter: blur(6px);
+  animation: puff .9s ease-out .1s;
+}
+.success__puff--2 { animation-delay: .3s; animation-duration: 1.15s; }
+@keyframes puff { 0% { opacity: .7; transform: scale(.4); } 100% { opacity: 0; transform: scale(2.3); } }
 #checkoutSuccess { text-align: center; }
 #checkoutSuccess .modal__sub { margin-bottom: 16px; }
 
@@ -562,6 +612,13 @@ body.has-cartbar { padding-bottom: 88px; }
 .success__points a { color: var(--blue); text-decoration: underline; }
 .drawer__credit { text-align: center; font-size: 12.5px; font-weight: 600; color: var(--green); }
 
+/* ---------- Scroll reveals ----------
+   Hidden state only applies under body.anim, which JS adds after
+   checking prefers-reduced-motion — no JS or reduced motion means
+   everything stays visible. */
+.anim .reveal { opacity: 0; transform: translateY(18px); transition: opacity .38s ease, transform .38s ease; }
+.anim .reveal.revealed { opacity: 1; transform: none; }
+
 /* ---------- Offline badge ---------- */
 .offline-badge {
   position: fixed; left: 12px; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); z-index: 64;
@@ -632,5 +689,11 @@ body.has-cartbar .offline-badge { bottom: calc(96px + env(safe-area-inset-bottom
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-delay: -1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+  .wisp, .cat-card__icon::after, .success__puff { display: none; }
 }

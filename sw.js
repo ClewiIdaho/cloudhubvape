@@ -5,7 +5,7 @@
    when assets change.
    ========================================================== */
 
-const CACHE = "cloudhub-v1";
+const CACHE = "cloudhub-v2";
 
 const PRECACHE = [
   "./",

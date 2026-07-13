@@ -164,7 +164,7 @@ function render() {
 grid.addEventListener("click", (e) => {
   const btn = e.target.closest(".product__add");
   if (!btn) return;
-  addToCart(btn.dataset.id);
+  addToCart(btn.dataset.id, btn.closest(".product"));
 });
 
 /* ---------- Cart ---------- */
@@ -190,7 +190,7 @@ function cartTotals() {
   };
 }
 
-function addToCart(id) {
+function addToCart(id, cardEl) {
   cart[id] = (cart[id] || 0) + 1;
   saveCart();
   updateCartUI();
@@ -198,6 +198,14 @@ function addToCart(id) {
   toast(`Added ${p.art} ${p.brand} to your order`);
   cartCountEl.classList.add("pop");
   setTimeout(() => cartCountEl.classList.remove("pop"), 250);
+  if (cardEl) {
+    cardEl.classList.add("card-pulse");
+    cardEl.addEventListener("animationend", () => cardEl.classList.remove("card-pulse"), { once: true });
+  }
+  const cb = $("#cartBtn");
+  cb.classList.remove("wiggle");
+  void cb.offsetWidth; /* restart animation on rapid taps */
+  cb.classList.add("wiggle");
 }
 
 function changeQty(id, delta) {
@@ -419,6 +427,30 @@ function toast(msg) {
   t.classList.add("show");
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => t.classList.remove("show"), 2200);
+}
+
+/* ---------- Scroll-triggered reveals ----------
+   Gated on prefers-reduced-motion: without the body.anim class the
+   hidden .reveal state never applies, so reduced-motion users (and
+   no-JS/no-IO browsers) just see everything in place. */
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+if (!reduceMotion && "IntersectionObserver" in window) {
+  document.body.classList.add("anim");
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((en) => {
+      if (!en.isIntersecting) return;
+      en.target.classList.add("revealed");
+      io.unobserve(en.target);
+    });
+  }, { threshold: 0.12, rootMargin: "0px 0px -36px" });
+
+  $$(".cat-card, .section-head, .step, .brands__marquee, .visit__card, #rewardsWrap").forEach((el) => {
+    el.classList.add("reveal");
+    /* stagger siblings so grids cascade instead of popping at once */
+    const idx = [...el.parentNode.children].indexOf(el);
+    el.style.transitionDelay = `${Math.min(idx, 5) * 60}ms`;
+    io.observe(el);
+  });
 }
 
 /* ---------- PWA: service worker + offline indicator ---------- */
