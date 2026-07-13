@@ -8,6 +8,7 @@
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => document.querySelectorAll(sel);
 const money = (n) => `$${n.toFixed(2)}`;
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 /* ---------- Age gate ---------- */
 const ageGate = $("#ageGate");
@@ -201,11 +202,39 @@ function addToCart(id, cardEl) {
   if (cardEl) {
     cardEl.classList.add("card-pulse");
     cardEl.addEventListener("animationend", () => cardEl.classList.remove("card-pulse"), { once: true });
+    flyToCart(cardEl);
   }
-  const cb = $("#cartBtn");
-  cb.classList.remove("wiggle");
-  void cb.offsetWidth; /* restart animation on rapid taps */
-  cb.classList.add("wiggle");
+  const wiggleDelay = reduceMotion || !cardEl ? 0 : 420; /* wiggle when the dot lands */
+  setTimeout(() => {
+    const cb = $("#cartBtn");
+    cb.classList.remove("wiggle");
+    void cb.offsetWidth; /* restart animation on rapid taps */
+    cb.classList.add("wiggle");
+  }, wiggleDelay);
+}
+
+/* A glowing dot arcs from the tapped card to the cart icon */
+function flyToCart(fromEl) {
+  if (reduceMotion || typeof fromEl.animate !== "function") return;
+  const from = fromEl.getBoundingClientRect();
+  const to = $("#cartBtn").getBoundingClientRect();
+  const dot = document.createElement("div");
+  dot.className = "fly-dot";
+  const sx = from.left + from.width / 2;
+  const sy = from.top + from.height / 2;
+  dot.style.left = `${sx}px`;
+  dot.style.top = `${sy}px`;
+  document.body.appendChild(dot);
+  const dx = to.left + to.width / 2 - sx;
+  const dy = to.top + to.height / 2 - sy;
+  dot.animate(
+    [
+      { transform: "translate(-50%,-50%) scale(1)", opacity: 1 },
+      { transform: `translate(calc(-50% + ${dx * 0.5}px), calc(-50% + ${dy * 0.5 - 60}px)) scale(.85)`, opacity: 1, offset: 0.55 },
+      { transform: `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) scale(.25)`, opacity: 0.5 },
+    ],
+    { duration: 480, easing: "cubic-bezier(.35,.6,.4,1)" }
+  ).onfinish = () => dot.remove();
 }
 
 function changeQty(id, delta) {
@@ -433,7 +462,6 @@ function toast(msg) {
    Gated on prefers-reduced-motion: without the body.anim class the
    hidden .reveal state never applies, so reduced-motion users (and
    no-JS/no-IO browsers) just see everything in place. */
-const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 if (!reduceMotion && "IntersectionObserver" in window) {
   document.body.classList.add("anim");
   const io = new IntersectionObserver((entries) => {
