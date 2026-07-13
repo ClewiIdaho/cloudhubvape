@@ -354,7 +354,12 @@ $("#successPoints").addEventListener("click", (e) => {
 });
 
 document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") { closeDrawer(); modal.classList.remove("open"); }
+  if (e.key === "Escape") {
+    closeDrawer();
+    modal.classList.remove("open");
+    devbarPanel.hidden = true;
+    devbarFab.setAttribute("aria-expanded", "false");
+  }
 });
 
 /* ---------- Rewards (demo preview) ---------- */
@@ -480,6 +485,71 @@ if (!reduceMotion && "IntersectionObserver" in window) {
     io.observe(el);
   });
 }
+
+/* ---------- Dev toolbar: demo themes + cloud intensity ----------
+   Presentation-only. The choice lands on <html> as data-theme /
+   .clouds-heavy and persists in localStorage; an inline snippet in
+   <head> restores it before first paint. */
+const THEMES = [
+  { id: "neon",   name: "Neon Clouds",  bg: "#07080f", swatch: "linear-gradient(100deg,#3aa7ff,#7a5cff,#ff2f92)" },
+  { id: "ember",  name: "Blackout Red", bg: "#0b0507", swatch: "linear-gradient(100deg,#ff4040,#e8112d,#ff6a00)" },
+  { id: "gold",   name: "24K Gold",     bg: "#0c0903", swatch: "linear-gradient(100deg,#ffd75e,#f5a623,#ff8f2b)" },
+  { id: "venom",  name: "Venom",        bg: "#050e08", swatch: "linear-gradient(100deg,#23e07e,#7ae02e,#c8f542)" },
+  { id: "arctic", name: "Arctic Ice",   bg: "#060b13", swatch: "linear-gradient(100deg,#4dd8ff,#3f8cff,#00b3ff)" },
+];
+
+const devbar = $("#devbar");
+const devbarFab = $("#devbarFab");
+const devbarPanel = $("#devbarPanel");
+const devbarThemes = $("#devbarThemes");
+
+THEMES.forEach((t) => {
+  const b = document.createElement("button");
+  b.type = "button";
+  b.className = "devbar__theme";
+  b.dataset.theme = t.id;
+  b.innerHTML = `<span class="devbar__dot" style="background:${t.swatch}"></span>${t.name}`;
+  b.addEventListener("click", () => applyTheme(t.id));
+  devbarThemes.appendChild(b);
+});
+
+function applyTheme(id) {
+  const theme = THEMES.find((t) => t.id === id) || THEMES[0];
+  if (theme.id === "neon") document.documentElement.removeAttribute("data-theme");
+  else document.documentElement.setAttribute("data-theme", theme.id);
+  localStorage.setItem("ch_theme", theme.id);
+  document.querySelector('meta[name="theme-color"]').setAttribute("content", theme.bg);
+  devbarThemes.querySelectorAll(".devbar__theme").forEach((b) =>
+    b.classList.toggle("active", b.dataset.theme === theme.id)
+  );
+}
+
+function applyClouds(mode) {
+  document.documentElement.classList.toggle("clouds-heavy", mode === "heavy");
+  localStorage.setItem("ch_clouds", mode);
+  $("#devbarClouds").querySelectorAll("button").forEach((b) =>
+    b.classList.toggle("active", b.dataset.clouds === mode)
+  );
+}
+$("#devbarClouds").addEventListener("click", (e) => {
+  const btn = e.target.closest("button[data-clouds]");
+  if (btn) applyClouds(btn.dataset.clouds);
+});
+
+devbarFab.addEventListener("click", () => {
+  devbarPanel.hidden = !devbarPanel.hidden;
+  devbarFab.setAttribute("aria-expanded", String(!devbarPanel.hidden));
+});
+document.addEventListener("click", (e) => {
+  if (!devbarPanel.hidden && !devbar.contains(e.target)) {
+    devbarPanel.hidden = true;
+    devbarFab.setAttribute("aria-expanded", "false");
+  }
+});
+
+/* Sync UI to whatever the head snippet restored */
+applyTheme(localStorage.getItem("ch_theme") || "neon");
+applyClouds(localStorage.getItem("ch_clouds") === "heavy" ? "heavy" : "normal");
 
 /* ---------- PWA: service worker + offline indicator ---------- */
 if ("serviceWorker" in navigator && /^https?:$/.test(location.protocol)) {
