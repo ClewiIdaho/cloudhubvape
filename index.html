@@ -21,8 +21,12 @@
   <meta name="twitter:description" content="Browse live inventory and order ahead for in-store pickup. 7068 W State St, Boise.">
   <meta name="twitter:image" content="https://clewiidaho.github.io/cloudhubvape/assets/og.jpg">
 
+  <link rel="manifest" href="manifest.json">
   <link rel="icon" href="assets/icon.png" type="image/png">
   <link rel="apple-touch-icon" href="assets/icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Cloud Hub">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -207,6 +211,12 @@
       <div class="visit__map">
         <iframe title="Map to Cloud Hub Vape & Smoke" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
           src="https://www.google.com/maps?q=7068+W+State+St,+Boise,+ID+83714&output=embed"></iframe>
+        <div class="visit__map-fallback">
+          <span>📍</span>
+          <strong>7068 W State St</strong>
+          Boise, ID 83714
+          <small>Map loads when you're back online</small>
+        </div>
       </div>
     </div>
   </section>
@@ -315,6 +325,7 @@
   </div>
 
   <div class="toast" id="toast"></div>
+  <div class="offline-badge" id="offlineBadge" hidden>⚡ Offline demo mode — running from cache</div>
 
   <script src="js/products.js"></script>
   <script src="js/app.js"></script>

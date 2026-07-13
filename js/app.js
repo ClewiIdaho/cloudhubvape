@@ -421,6 +421,23 @@ function toast(msg) {
   toastTimer = setTimeout(() => t.classList.remove("show"), 2200);
 }
 
+/* ---------- PWA: service worker + offline indicator ---------- */
+if ("serviceWorker" in navigator && /^https?:$/.test(location.protocol)) {
+  navigator.serviceWorker.register("sw.js").catch(() => {
+    /* registration failing (e.g. unsupported browser) never blocks the site */
+  });
+}
+
+const offlineBadge = $("#offlineBadge");
+function updateOnlineStatus() {
+  const off = !navigator.onLine;
+  document.body.classList.toggle("is-offline", off);
+  offlineBadge.hidden = !off;
+}
+window.addEventListener("online", updateOnlineStatus);
+window.addEventListener("offline", updateOnlineStatus);
+updateOnlineStatus();
+
 /* ---------- Init ---------- */
 render();
 updateCartUI();
