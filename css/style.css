@@ -468,6 +468,40 @@ section { padding: 76px clamp(16px, 5vw, 56px); max-width: 1280px; margin: 0 aut
 .step h3 { font-family: var(--font-display); font-size: 18px; margin-bottom: 8px; }
 .step p { color: var(--muted); font-size: 14px; }
 
+/* ---------- Local / community ---------- */
+.local__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; margin-bottom: 44px; }
+.local-card {
+  background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius);
+  padding: 30px 24px; transition: transform .2s, border-color .2s, box-shadow .2s;
+}
+.local-card:hover { transform: translateY(-5px); border-color: rgba(var(--blue-rgb),.5); box-shadow: 0 14px 40px rgba(var(--blue-rgb),.15); }
+.local-card__icon { font-size: 34px; margin-bottom: 12px; }
+.local-card h3 { font-family: var(--font-display); font-size: 18px; margin-bottom: 8px; }
+.local-card p { color: var(--muted); font-size: 14px; }
+
+.local__quotes { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; margin-bottom: 44px; }
+.quote {
+  background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius);
+  padding: 24px 22px; display: flex; flex-direction: column; gap: 10px;
+}
+.quote__stars { color: var(--amber); font-size: 14px; letter-spacing: 3px; }
+.quote p { font-size: 14.5px; line-height: 1.55; }
+.quote figcaption { font-size: 13px; color: var(--muted); margin-top: auto; }
+.quote figcaption b { color: var(--text); font-weight: 600; }
+
+.local__serving { text-align: center; }
+.local__serving-label {
+  font-size: 12px; font-weight: 800; letter-spacing: 4px; margin-bottom: 16px;
+  background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.local__areas { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.area-pill {
+  font: 600 13px var(--font-body); color: var(--muted);
+  background: var(--card); border: 1px solid var(--card-border);
+  padding: 9px 16px; border-radius: 999px;
+}
+.area-pill--all { background: var(--grad); color: #fff; border-color: transparent; box-shadow: 0 4px 18px rgba(var(--mid-rgb),.35); }
+
 /* ---------- Visit ---------- */
 .visit__card {
   display: grid; grid-template-columns: 1fr 1fr; gap: 0; overflow: hidden;
@@ -804,7 +838,7 @@ body.has-cartbar .offline-badge { bottom: calc(96px + env(safe-area-inset-bottom
     border-bottom: 1px solid var(--card-border);
     max-height: 0; overflow: hidden; transition: max-height .3s ease;
   }
-  .nav__links.open { max-height: 320px; }
+  .nav__links.open { max-height: 420px; }
   .nav__links a { padding: 15px 24px; border-top: 1px solid rgba(255,255,255,.05); }
   .nav__burger { display: block; }
   .hero__stats { grid-template-columns: 1fr 1fr; }

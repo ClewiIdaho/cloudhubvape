@@ -477,7 +477,7 @@ if (!reduceMotion && "IntersectionObserver" in window) {
     });
   }, { threshold: 0.12, rootMargin: "0px 0px -36px" });
 
-  $$(".cat-card, .section-head, .step, .brands__marquee, .visit__card, #rewardsWrap").forEach((el) => {
+  $$(".cat-card, .section-head, .step, .brands__marquee, .visit__card, #rewardsWrap, .local-card, .quote, .local__serving").forEach((el) => {
     el.classList.add("reveal");
     /* stagger siblings so grids cascade instead of popping at once */
     const idx = [...el.parentNode.children].indexOf(el);
