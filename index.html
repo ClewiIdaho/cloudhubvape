@@ -31,6 +31,15 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
+  <script>
+    /* Restore the demo theme before first paint so switching persists
+       across reloads without a flash of the default colors. */
+    try {
+      var t = localStorage.getItem("ch_theme");
+      if (t && t !== "neon") document.documentElement.setAttribute("data-theme", t);
+      if (localStorage.getItem("ch_clouds") === "heavy") document.documentElement.classList.add("clouds-heavy");
+    } catch (e) {}
+  </script>
 </head>
 <body>
 
@@ -83,6 +92,8 @@
     <div class="wisp wisp--2"></div>
     <div class="wisp wisp--3"></div>
     <div class="wisp wisp--4"></div>
+    <div class="wisp wisp--5"></div>
+    <div class="wisp wisp--6"></div>
     <div class="hero__inner">
       <p class="hero__badge">⚡ NOW OPEN · 7068 W State St, Boise</p>
       <h1 class="hero__title">
@@ -335,6 +346,21 @@
 
   <div class="toast" id="toast"></div>
   <div class="offline-badge" id="offlineBadge" hidden>⚡ Offline demo mode — running from cache</div>
+
+  <!-- ============ DEV TOOLBAR (demo theme chooser) ============ -->
+  <div class="devbar" id="devbar">
+    <div class="devbar__panel" id="devbarPanel" hidden>
+      <p class="devbar__title">🎛 Demo toolbar</p>
+      <p class="devbar__label">Theme</p>
+      <div class="devbar__themes" id="devbarThemes"></div>
+      <p class="devbar__label">Cloud intensity</p>
+      <div class="devbar__seg" id="devbarClouds">
+        <button type="button" data-clouds="normal">Normal</button>
+        <button type="button" data-clouds="heavy">Heavy</button>
+      </div>
+    </div>
+    <button class="devbar__fab" id="devbarFab" aria-label="Demo theme options" aria-expanded="false">🎨</button>
+  </div>
 
   <script src="js/products.js"></script>
   <script src="js/app.js"></script>
